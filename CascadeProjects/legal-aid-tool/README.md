@@ -59,32 +59,154 @@ A comprehensive case management system designed specifically for Canadian legal 
 - Indigenous case tracking
 - Language rights detection
 
-## Installation
+## Setup Instructions
 
+### 1. Prerequisites
+- Python 3.8 or higher
+- MySQL 8.0 or higher
+- Git
+- pip (Python package manager)
+
+### 2. Database Setup
+1. Create a new MySQL database:
+```sql
+CREATE DATABASE legal_aid_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+2. Create a user with proper permissions:
+```sql
+CREATE USER 'legal_aid_user'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON legal_aid_db.* TO 'legal_aid_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### 3. Application Setup
 1. Clone the repository:
 ```bash
 git clone https://github.com/anujbhsharma/themis-core-ai.git
+```
+
+2. Navigate to the project directory:
+```bash
 cd themis-core-ai
 ```
 
-2. Create a virtual environment:
+3. Create a virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. Install dependencies:
+4. Activate the virtual environment:
+```bash
+# On Windows
+venv\Scripts\activate
+
+# On Linux/Mac
+source venv/bin/activate
+```
+
+5. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Configure environment variables:
-Create a `.env` file with the following variables:
+6. Configure environment:
+Create a `.env` file in the project root with the following variables:
 ```
 DB_HOST=localhost
-DB_USER=your_username
+DB_USER=legal_aid_user
 DB_PASSWORD=your_password
 DB_NAME=legal_aid_db
+```
+
+7. Initialize the database schema:
+```bash
+python database_schema.py
+```
+
+### 4. Running the Application
+1. Organizing cases:
+```bash
+python organize_cases.py path/to/case/documents
+```
+
+2. Querying cases:
+```bash
+python query_cases.py
+```
+
+### 5. Testing
+To run tests:
+```bash
+python -m pytest tests/
+```
+
+### 6. Configuration Options
+Environment variables that can be configured:
+```
+# Database Configuration
+DB_HOST=localhost
+DB_USER=legal_aid_user
+DB_PASSWORD=your_password
+DB_NAME=legal_aid_db
+
+# Application Settings
+LOG_LEVEL=INFO
+MAX_CASES_PER_BATCH=100
+CACHE_ENABLED=true
+CACHE_TIMEOUT=3600
+```
+
+### 7. Troubleshooting
+#### Common Issues
+1. Database Connection Error:
+   - Verify database credentials in .env file
+   - Ensure MySQL server is running
+   - Check firewall settings
+
+2. Missing Dependencies:
+   - Run `pip install -r requirements.txt` again
+   - Verify Python version compatibility
+
+3. Permission Errors:
+   - Check MySQL user permissions
+   - Verify file permissions
+   - Run commands with appropriate privileges
+
+#### Error Messages
+- "Database connection failed": Check database credentials
+- "Module not found": Run pip install again
+- "Permission denied": Check file permissions
+
+### 8. Security Considerations
+1. Never commit the .env file to version control
+2. Use strong passwords for database access
+3. Regularly update dependencies
+4. Enable SSL/TLS for database connections
+5. Implement proper access controls
+
+### 9. Performance Optimization
+1. Indexes have been added for:
+   - Province
+   - Practice Area
+   - Status
+   - Priority
+   - Next Action Date
+
+2. For large datasets:
+   - Increase batch size in configuration
+   - Optimize database indexes
+   - Consider partitioning large tables
+
+### 10. Backup and Recovery
+1. Regular database backups:
+```bash
+mysqldump -u legal_aid_user -p legal_aid_db > backup.sql
+```
+
+2. Restore from backup:
+```bash
+mysql -u legal_aid_user -p legal_aid_db < backup.sql
 ```
 
 ## Usage
