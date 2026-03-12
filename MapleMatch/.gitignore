@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Build
+.next/
+.turbo/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+*.egg
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Docker
+docker-compose.override.yml

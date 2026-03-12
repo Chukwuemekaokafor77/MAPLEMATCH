@@ -1,0 +1,150 @@
+{
+  "app": {
+    "name": "MapleMatch",
+    "tagline": "Trouvez un logement abordable au Canada",
+    "description": "Plateforme de jumelage de logements abordables propulsée par l'IA pour le Canada."
+  },
+  "nav": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "listings": "Annonces",
+    "matches": "Mes jumelages",
+    "signIn": "Connexion",
+    "signUp": "Inscription",
+    "signOut": "Déconnexion"
+  },
+  "home": {
+    "hero": "Trouvez votre logement abordable au Canada",
+    "subtitle": "MapleMatch vous jumelle instantanément avec les logements abordables, subventions, coopératives et listes d'attente disponibles partout au Canada.",
+    "cta": "Commencer",
+    "learnMore": "En savoir plus"
+  },
+  "auth": {
+    "signInTitle": "Connexion à MapleMatch",
+    "signUpTitle": "Créer votre compte",
+    "continueWith": "Ou continuer avec"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue, {{name}}",
+    "subtitle": "Voici un aperçu de votre recherche de logement.",
+    "profile": "Profil d'admissibilité",
+    "profileComplete": "Profil complété",
+    "profileIncomplete": "Profil incomplet",
+    "updateProfile": "Mettre à jour le profil",
+    "startProfile": "Compléter le profil",
+    "matches": "Jumelages IA",
+    "matchCount_one": "{{count}} jumelage trouvé",
+    "matchCount_other": "{{count}} jumelages trouvés",
+    "matchCount": "{{count}} jumelages trouvés",
+    "viewMatches": "Voir les jumelages",
+    "listings": "Annonces",
+    "acceptedCount": "{{count}} acceptés",
+    "browseListings": "Parcourir les annonces",
+    "getStarted": "Complétez votre profil d'admissibilité",
+    "getStartedDesc": "Remplissez un court questionnaire pour que nous puissions vous jumeler avec un logement adapté à vos besoins."
+  },
+  "wizard": {
+    "title": "Profil d'admissibilité",
+    "subtitle": "Parlez-nous de vous afin que nous puissions trouver le bon logement pour vous.",
+    "step": "Étape {{current}} de {{total}}",
+    "income": {
+      "title": "Revenu et ménage",
+      "annual": "Revenu annuel du ménage ($CAD)",
+      "household": "Nombre de personnes dans le ménage"
+    },
+    "location": {
+      "title": "Emplacement",
+      "province": "Province / Territoire",
+      "selectProvince": "Sélectionner la province",
+      "city": "Ville",
+      "postalCode": "Code postal"
+    },
+    "preferences": {
+      "title": "Préférences",
+      "priorityGroup": "Groupe prioritaire",
+      "groups": {
+        "none": "Aucun",
+        "newcomer": "Nouvel arrivant au Canada",
+        "senior": "Aîné (65+)",
+        "indigenous": "Autochtone",
+        "veteran": "Vétéran",
+        "disability": "Personne en situation de handicap",
+        "fleeing_violence": "Fuyant la violence"
+      },
+      "maxRent": "Loyer mensuel maximum ($CAD)",
+      "accessible": "J'ai besoin d'un logement accessible"
+    },
+    "consent": {
+      "title": "Confidentialité et consentement",
+      "description": "MapleMatch recueille vos informations pour vous jumeler avec des logements abordables. Vos données sont traitées conformément à la LPRPDE.",
+      "point1": "Vos données sont stockées en sécurité dans des centres de données canadiens.",
+      "point2": "Nous ne partagerons jamais vos informations sans votre consentement explicite.",
+      "point3": "Vous pouvez supprimer vos données à tout moment depuis les paramètres de votre profil.",
+      "agree": "Je consens à la collecte et à l'utilisation de mes données pour le jumelage de logement."
+    }
+  },
+  "listings": {
+    "title": "Annonces disponibles",
+    "filters": "Filtrer les annonces",
+    "city": "Ville",
+    "province": "Province",
+    "allProvinces": "Toutes les provinces",
+    "maxRent": "Loyer maximum",
+    "bedrooms": "Chambres",
+    "accessible": "Accessible",
+    "rgi": "LRR",
+    "any": "Tous",
+    "yes": "Oui",
+    "no": "Non",
+    "clearFilters": "Effacer les filtres",
+    "noResults": "Aucune annonce trouvée. Essayez d'ajuster vos filtres.",
+    "bed": "ch.",
+    "bath": "sdb"
+  },
+  "matches": {
+    "title": "Jumelages IA",
+    "subtitle": "Jumelage intelligent basé sur les règles d'admissibilité, l'analyse sémantique et l'apprentissage automatique.",
+    "findMatches": "Trouver des jumelages",
+    "completeProfile": "Compléter le profil d'abord",
+    "noResults": "Aucun jumelage trouvé. Essayez de mettre à jour votre profil d'admissibilité.",
+    "eligible": "Admissible",
+    "ineligible": "Non admissible",
+    "matchScore": "score de jumelage",
+    "rules": "Règles",
+    "semantic": "Sémantique",
+    "ml": "Caractéristiques ML",
+    "estimatedWait": "Attente estimée",
+    "days": "jours",
+    "confidence": "confiance",
+    "showDetails": "Afficher les détails",
+    "hideDetails": "Masquer les détails",
+    "scoringFactors": "Facteurs de notation",
+    "waitFactors": "Facteurs de temps d'attente",
+    "explanation": "Explication"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "next": "Suivant"
+  },
+  "a11y": {
+    "skipToContent": "Passer au contenu principal",
+    "mainNavigation": "Navigation principale",
+    "languageSwitch": "Changer de langue",
+    "notificationList": "Liste des notifications",
+    "filterControls": "Contrôles de filtrage",
+    "searchResults": "Résultats de recherche"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications ({{count}} non lues)",
+    "empty": "Tout est à jour — aucune notification.",
+    "dismiss": "Supprimer la notification",
+    "markAllRead": "Tout marquer comme lu"
+  }
+}

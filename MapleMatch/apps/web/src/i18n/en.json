@@ -1,0 +1,150 @@
+{
+  "app": {
+    "name": "MapleMatch",
+    "tagline": "Find affordable housing in Canada",
+    "description": "AI-powered affordable housing matching platform for Canada."
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "listings": "Listings",
+    "matches": "My Matches",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "hero": "Find Your Affordable Home in Canada",
+    "subtitle": "MapleMatch instantly matches you with available affordable housing, subsidies, co-ops, and waitlists across Canada.",
+    "cta": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "auth": {
+    "signInTitle": "Sign in to MapleMatch",
+    "signUpTitle": "Create your account",
+    "continueWith": "Or continue with"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {{name}}",
+    "subtitle": "Here's an overview of your housing search.",
+    "profile": "Eligibility Profile",
+    "profileComplete": "Profile complete",
+    "profileIncomplete": "Profile incomplete",
+    "updateProfile": "Update Profile",
+    "startProfile": "Complete Profile",
+    "matches": "AI Matches",
+    "matchCount_one": "{{count}} match found",
+    "matchCount_other": "{{count}} matches found",
+    "matchCount": "{{count}} matches found",
+    "viewMatches": "View Matches",
+    "listings": "Listings",
+    "acceptedCount": "{{count}} accepted",
+    "browseListings": "Browse Listings",
+    "getStarted": "Complete your eligibility profile",
+    "getStartedDesc": "Fill out a quick questionnaire so we can match you with housing that fits your needs."
+  },
+  "wizard": {
+    "title": "Eligibility Profile",
+    "subtitle": "Tell us about yourself so we can find the right housing for you.",
+    "step": "Step {{current}} of {{total}}",
+    "income": {
+      "title": "Income & Household",
+      "annual": "Annual household income ($CAD)",
+      "household": "Number of people in household"
+    },
+    "location": {
+      "title": "Location",
+      "province": "Province / Territory",
+      "selectProvince": "Select province",
+      "city": "City",
+      "postalCode": "Postal code"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "priorityGroup": "Priority group",
+      "groups": {
+        "none": "None",
+        "newcomer": "Newcomer to Canada",
+        "senior": "Senior (65+)",
+        "indigenous": "Indigenous",
+        "veteran": "Veteran",
+        "disability": "Person with a disability",
+        "fleeing_violence": "Fleeing violence"
+      },
+      "maxRent": "Maximum monthly rent ($CAD)",
+      "accessible": "I need an accessible unit"
+    },
+    "consent": {
+      "title": "Privacy & Consent",
+      "description": "MapleMatch collects your information to match you with affordable housing. Your data is handled in compliance with PIPEDA.",
+      "point1": "Your data is stored securely in Canadian data centres.",
+      "point2": "We will never share your information without your explicit consent.",
+      "point3": "You can delete your data at any time from your profile settings.",
+      "agree": "I consent to the collection and use of my data for housing matching."
+    }
+  },
+  "listings": {
+    "title": "Available Listings",
+    "filters": "Filter Listings",
+    "city": "City",
+    "province": "Province",
+    "allProvinces": "All Provinces",
+    "maxRent": "Max Rent",
+    "bedrooms": "Bedrooms",
+    "accessible": "Accessible",
+    "rgi": "RGI",
+    "any": "Any",
+    "yes": "Yes",
+    "no": "No",
+    "clearFilters": "Clear filters",
+    "noResults": "No listings found. Try adjusting your filters.",
+    "bed": "bed",
+    "bath": "bath"
+  },
+  "matches": {
+    "title": "AI Matches",
+    "subtitle": "Smart matching powered by eligibility rules, semantic analysis, and machine learning.",
+    "findMatches": "Find Matches",
+    "completeProfile": "Complete Profile First",
+    "noResults": "No matches found. Try updating your eligibility profile.",
+    "eligible": "Eligible",
+    "ineligible": "Not Eligible",
+    "matchScore": "match score",
+    "rules": "Rules",
+    "semantic": "Semantic",
+    "ml": "ML Features",
+    "estimatedWait": "Est. wait",
+    "days": "days",
+    "confidence": "confidence",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "scoringFactors": "Scoring Factors",
+    "waitFactors": "Wait-Time Factors",
+    "explanation": "Explanation"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next"
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "mainNavigation": "Main navigation",
+    "languageSwitch": "Switch language",
+    "notificationList": "Notification list",
+    "filterControls": "Filter controls",
+    "searchResults": "Search results"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications ({{count}} unread)",
+    "empty": "You're all caught up — no notifications.",
+    "dismiss": "Dismiss notification",
+    "markAllRead": "Mark all as read"
+  }
+}

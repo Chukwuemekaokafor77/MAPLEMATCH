@@ -1,0 +1,44 @@
+# FastAPI
+fastapi[standard]>=0.115.0
+uvicorn[standard]>=0.34.0
+
+# Database
+sqlmodel>=0.0.22
+asyncpg>=0.30.0
+alembic>=1.14.0
+psycopg2-binary>=2.9.0
+
+# Redis
+redis>=5.2.0
+
+# Validation / Settings
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+
+# Auth
+pyjwt>=2.10.0
+cryptography>=44.0.0
+
+# Linting / Formatting
+ruff>=0.8.0
+
+# Validation
+email-validator>=2.0.0
+
+# OCR / Document Processing (optional — install for document upload feature)
+pymupdf>=1.24.0
+pytesseract>=0.3.10
+Pillow>=10.0.0
+
+# AI / ML
+scikit-learn>=1.5.0
+lightgbm>=4.5.0
+sentence-transformers>=3.0.0
+numpy>=1.26.0
+
+# Testing
+pytest>=8.3.0
+pytest-asyncio>=0.25.0
+pytest-cov>=6.0.0
+httpx>=0.28.0
+aiosqlite>=0.22.0
