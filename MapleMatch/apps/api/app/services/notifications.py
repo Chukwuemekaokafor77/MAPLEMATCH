@@ -1,6 +1,9 @@
 """Notification service — create, query, and manage user notifications."""
 
 import uuid
+import smtplib
+from email.message import EmailMessage
+from app.config import settings
 from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,6 +32,27 @@ async def create_notification(
     session.add(notification)
     await session.commit()
     await session.refresh(notification)
+
+    # Send email if SMTP is configured and user email is available
+    if settings.smtp_host and settings.smtp_user and settings.smtp_password:
+        try:
+            # Fetch user email (requires user lookup, not available in args)
+            from app.models import User
+            user = await session.get(User, user_id)
+            if user and user.email:
+                msg = EmailMessage()
+                msg["Subject"] = f"MapleMatch Notification: {title}"
+                msg["From"] = settings.notification_from_email
+                msg["To"] = user.email
+                msg.set_content(body)
+                with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
+                    server.starttls()
+                    server.login(settings.smtp_user, settings.smtp_password)
+                    server.send_message(msg)
+        except Exception as e:
+            # Log error, but don't block notification creation
+            print(f"[Email Notification Error] {e}")
+
     return notification
 
 
