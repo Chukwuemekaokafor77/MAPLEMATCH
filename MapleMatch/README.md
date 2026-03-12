@@ -48,7 +48,7 @@ docker compose up
 ```mermaid
 graph TB
     User[User] --> Clerk[Clerk Auth]
-    Clerk --> Web[Next.js + React Frontend<br/>apps/web]
+    Clerk --> Web[Next.js Frontend<br/>apps/web]
     Clerk --> API[FastAPI Backend<br/>apps/api]
     Web --> API
     API --> Eligibility[Eligibility Engine]
@@ -63,7 +63,7 @@ graph TB
 
 | Package | Stack | Path |
 |---------|-------|------|
-| **web** | Vite + React 19, TypeScript, Tailwind, shadcn/ui | `apps/web/` |
+| **web** | Next.js 16, React 19, TypeScript, Tailwind, shadcn/ui | `apps/web/` |
 | **api** | Python 3.12, FastAPI, SQLModel | `apps/api/` |
 | **mobile** | React Native (Expo) | `apps/mobile/` |
 
@@ -85,7 +85,7 @@ ruff check --fix && ruff format # Lint + format
 # Frontend (apps/web/)
 npm test                        # Vitest unit tests
 npm run lint                    # ESLint
-npm run build                   # TypeScript + Vite build
+npm run build                   # Next.js build
 ```
 
 ## Deploy (Canadian Regions)
@@ -126,7 +126,7 @@ The application is configured with cloud database integration for immediate depl
 
 GitHub Actions pipeline runs on every PR and push to `main`:
 - Backend lint (Ruff) + test (pytest 90%+ coverage) + security scan (pip-audit, bandit)
-- Frontend lint (ESLint) + test (Vitest) + build (TypeScript + Vite)
+- Frontend lint (ESLint) + test (Vitest) + build (Next.js)
 - Docker compose build check
 - Dependabot for automated dependency updates
 
