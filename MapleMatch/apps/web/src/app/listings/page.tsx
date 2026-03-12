@@ -45,21 +45,20 @@ export default function ListingsPage() {
   const { t } = useTranslation();
   const [filters, setFilters] = useState({
     city: "",
-    province: "",
+    province: "any",
     max_rent: "",
     bedrooms: "",
-    is_accessible: "",
-    is_rgi: "",
+    is_accessible: "any",
+    is_rgi: "any",
   });
 
   const params = new URLSearchParams();
   if (filters.city) params.set("city", filters.city);
-  if (filters.province) params.set("province", filters.province);
+  if (filters.province && filters.province !== "any") params.set("province", filters.province);
   if (filters.max_rent) params.set("max_rent", filters.max_rent);
   if (filters.bedrooms) params.set("bedrooms", filters.bedrooms);
-  if (filters.is_accessible)
-    params.set("is_accessible", filters.is_accessible);
-  if (filters.is_rgi) params.set("is_rgi", filters.is_rgi);
+  if (filters.is_accessible && filters.is_accessible !== "any") params.set("is_accessible", filters.is_accessible);
+  if (filters.is_rgi && filters.is_rgi !== "any") params.set("is_rgi", filters.is_rgi);
 
   const { data: listings, isLoading, isError } = useListings(params);
 
@@ -97,7 +96,7 @@ export default function ListingsPage() {
                   <SelectValue placeholder={t("listings.allProvinces")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t("listings.allProvinces")}</SelectItem>
+                  <SelectItem value="any">{t("listings.allProvinces")}</SelectItem>
                   {PROVINCES.map((p) => (
                     <SelectItem key={p} value={p}>
                       {p}
@@ -144,7 +143,7 @@ export default function ListingsPage() {
                   <SelectValue placeholder={t("listings.any")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t("listings.any")}</SelectItem>
+                  <SelectItem value="any">{t("listings.any")}</SelectItem>
                   <SelectItem value="true">{t("listings.yes")}</SelectItem>
                   <SelectItem value="false">{t("listings.no")}</SelectItem>
                 </SelectContent>
@@ -162,7 +161,7 @@ export default function ListingsPage() {
                   <SelectValue placeholder={t("listings.any")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t("listings.any")}</SelectItem>
+                  <SelectItem value="any">{t("listings.any")}</SelectItem>
                   <SelectItem value="true">{t("listings.yes")}</SelectItem>
                   <SelectItem value="false">{t("listings.no")}</SelectItem>
                 </SelectContent>
@@ -175,11 +174,11 @@ export default function ListingsPage() {
             onClick={() =>
               setFilters({
                 city: "",
-                province: "",
+                province: "any",
                 max_rent: "",
                 bedrooms: "",
-                is_accessible: "",
-                is_rgi: "",
+                is_accessible: "any",
+                is_rgi: "any",
               })
             }
           >
