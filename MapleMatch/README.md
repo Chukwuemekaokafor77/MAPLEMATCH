@@ -48,7 +48,7 @@ docker compose up
 ```mermaid
 graph TB
     User[User] --> Clerk[Clerk Auth]
-    Clerk --> Web[Vite + React Frontend<br/>apps/web]
+    Clerk --> Web[Next.js + React Frontend<br/>apps/web]
     Clerk --> API[FastAPI Backend<br/>apps/api]
     Web --> API
     API --> Eligibility[Eligibility Engine]
