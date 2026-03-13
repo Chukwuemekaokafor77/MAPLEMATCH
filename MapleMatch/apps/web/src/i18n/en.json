@@ -16,8 +16,59 @@
   "home": {
     "hero": "Find Your Affordable Home in Canada",
     "subtitle": "MapleMatch instantly matches you with available affordable housing, subsidies, co-ops, and waitlists across Canada.",
-    "cta": "Get Started",
-    "learnMore": "Learn More"
+    "cta": "Get Started Free",
+    "learnMore": "Browse Listings",
+    "stats": {
+      "listings": "10,000+",
+      "listingsLabel": "Available Listings",
+      "provinces": "13",
+      "provincesLabel": "Provinces & Territories",
+      "free": "100% Free",
+      "freeLabel": "For Applicants"
+    },
+    "features": {
+      "title": "Everything You Need to Find Housing",
+      "subtitle": "MapleMatch combines eligibility rules, smart search, and AI to connect you with the right home — faster.",
+      "ai": {
+        "title": "AI-Powered Matching",
+        "desc": "Our engine analyses hundreds of factors to rank listings by your eligibility, preferences, and predicted wait time."
+      },
+      "wizard": {
+        "title": "Eligibility Wizard",
+        "desc": "A simple 4-step questionnaire captures your household details so we only surface housing you qualify for."
+      },
+      "filters": {
+        "title": "Smart Search",
+        "desc": "Filter by city, province, rent, bedrooms, RGI status, and accessibility in real time."
+      },
+      "notifications": {
+        "title": "Instant Alerts",
+        "desc": "Get notified the moment a new listing matching your profile becomes available."
+      },
+      "bilingual": {
+        "title": "Fully Bilingual",
+        "desc": "Available in English and French to serve every Canadian community."
+      },
+      "accessible": {
+        "title": "Accessible by Design",
+        "desc": "WCAG-compliant interface with accessible unit filtering and full screen-reader support."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "From sign-up to your first match in minutes.",
+      "step1Title": "Create Your Profile",
+      "step1Desc": "Answer a few quick questions about your income, household size, and housing preferences.",
+      "step2Title": "Get Matched Instantly",
+      "step2Desc": "Our AI scans available listings across Canada and ranks them by your eligibility and needs.",
+      "step3Title": "Apply with Confidence",
+      "step3Desc": "Review your top matches, see estimated wait times, and connect directly with housing providers."
+    },
+    "finalCta": {
+      "title": "Ready to Find Your Home?",
+      "subtitle": "Join thousands of Canadians using MapleMatch to find affordable housing.",
+      "button": "Get Started — It's Free"
+    }
   },
   "auth": {
     "signInTitle": "Sign in to MapleMatch",
@@ -138,7 +189,9 @@
     "languageSwitch": "Switch language",
     "notificationList": "Notification list",
     "filterControls": "Filter controls",
-    "searchResults": "Search results"
+    "searchResults": "Search results",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "notifications": {
     "title": "Notifications",

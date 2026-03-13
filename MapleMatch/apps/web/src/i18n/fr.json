@@ -16,8 +16,59 @@
   "home": {
     "hero": "Trouvez votre logement abordable au Canada",
     "subtitle": "MapleMatch vous jumelle instantanément avec les logements abordables, subventions, coopératives et listes d'attente disponibles partout au Canada.",
-    "cta": "Commencer",
-    "learnMore": "En savoir plus"
+    "cta": "Commencer gratuitement",
+    "learnMore": "Parcourir les annonces",
+    "stats": {
+      "listings": "10 000+",
+      "listingsLabel": "Annonces disponibles",
+      "provinces": "13",
+      "provincesLabel": "Provinces et territoires",
+      "free": "100 % gratuit",
+      "freeLabel": "Pour les candidats"
+    },
+    "features": {
+      "title": "Tout ce qu’il vous faut pour trouver un logement",
+      "subtitle": "MapleMatch combine les règles d’admissibilité, la recherche intelligente et l’IA pour vous connecter au bon logement, plus rapidement.",
+      "ai": {
+        "title": "Jumelage par IA",
+        "desc": "Notre moteur analyse des centaines de facteurs pour classer les annonces selon votre admissibilité, vos préférences et le temps d’attente prévu."
+      },
+      "wizard": {
+        "title": "Assistant d’admissibilité",
+        "desc": "Un questionnaire simple en 4 étapes capture les détails de votre ménage pour n’afficher que les logements auxquels vous êtes admissible."
+      },
+      "filters": {
+        "title": "Recherche intelligente",
+        "desc": "Filtrez par ville, province, loyer, chambres, statut LRR et accessibilité en temps réel."
+      },
+      "notifications": {
+        "title": "Alertes instantanées",
+        "desc": "Soyez notifié dès qu’une nouvelle annonce correspondant à votre profil est disponible."
+      },
+      "bilingual": {
+        "title": "Entièrement bilingue",
+        "desc": "Disponible en anglais et en français pour servir toutes les communautés canadiennes."
+      },
+      "accessible": {
+        "title": "Accessibilité d’abord",
+        "desc": "Interface conforme WCAG avec filtrage des unités accessibles et prise en charge complète des lecteurs d’écran."
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça fonctionne",
+      "subtitle": "De l’inscription à votre premier jumelage en quelques minutes.",
+      "step1Title": "Créez votre profil",
+      "step1Desc": "Répondez à quelques questions sur vos revenus, la taille de votre ménage et vos préférences de logement.",
+      "step2Title": "Obtenez des jumelages instantanément",
+      "step2Desc": "Notre IA parcourt les annonces disponibles partout au Canada et les classe selon votre admissibilité.",
+      "step3Title": "Postulez en toute confiance",
+      "step3Desc": "Consultez vos meilleurs jumelages, les temps d’attente estimés et connectez-vous directement avec les fournisseurs."
+    },
+    "finalCta": {
+      "title": "Prêt à trouver votre logement?",
+      "subtitle": "Rejoignez des milliers de Canadiens qui utilisent MapleMatch pour trouver un logement abordable.",
+      "button": "Commencer — c’est gratuit"
+    }
   },
   "auth": {
     "signInTitle": "Connexion à MapleMatch",
@@ -138,7 +189,9 @@
     "languageSwitch": "Changer de langue",
     "notificationList": "Liste des notifications",
     "filterControls": "Contrôles de filtrage",
-    "searchResults": "Résultats de recherche"
+    "searchResults": "Résultats de recherche",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
   },
   "notifications": {
     "title": "Notifications",

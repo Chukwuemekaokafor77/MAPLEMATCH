@@ -1,5 +1,6 @@
 import "@/index.css";
 import type { Metadata } from "next";
+import ClientProviders from "./client-providers";
 
 export const metadata: Metadata = {
   title: "MapleMatch — Affordable Housing in Canada",
@@ -14,11 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="antialiased">
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );
 }
-
-import ClientProviders from "./client-providers";
