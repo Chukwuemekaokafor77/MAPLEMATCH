@@ -1,12 +1,9 @@
 "use client";
 
-import { ClerkProvider } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import Header from "@/components/Header";
 import "@/i18n";
-
-const CLERK_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 export default function ClientProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -18,7 +15,7 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
       })
   );
 
-  const content = (
+  return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-background text-foreground">
         <a
@@ -31,13 +28,5 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
         <div id="main-content">{children}</div>
       </div>
     </QueryClientProvider>
-  );
-
-  if (!CLERK_KEY) {
-    return content;
-  }
-
-  return (
-    <ClerkProvider publishableKey={CLERK_KEY}>{content}</ClerkProvider>
   );
 }

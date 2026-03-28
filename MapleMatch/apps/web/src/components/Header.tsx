@@ -7,7 +7,7 @@ import {
   UserButton,
   SignInButton,
   SignUpButton,
-} from "@clerk/clerk-react";
+} from "@clerk/nextjs";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

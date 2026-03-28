@@ -8,7 +8,7 @@ import i18n from "@/i18n";
 const mockAuthState = { isSignedIn: false, isLoaded: true, getToken: vi.fn() };
 
 // ─── Module mocks ─────────────────────────────────────────────────
-vi.mock("@clerk/clerk-react", () => ({
+vi.mock("@clerk/nextjs", () => ({
   useAuth: () => mockAuthState,
   useUser: () => ({ user: mockAuthState.isSignedIn ? { firstName: "Alex" } : null }),
   UserButton: () => <div data-testid="user-button" />,
