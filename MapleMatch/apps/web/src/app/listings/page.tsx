@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 import { useListings } from "@/hooks/useApi";
 import type { Listing } from "@/lib/api";
 import { MapPin, DollarSign, Bed, Accessibility } from "lucide-react";
@@ -222,7 +223,7 @@ export default function ListingsPage() {
 function ListingCard({ listing }: { listing: Listing }) {
   const { t } = useTranslation();
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col hover:border-primary/50 transition-colors">
       <CardHeader className="pb-3">
         <CardTitle className="text-base leading-snug">
           {listing.title}
@@ -265,6 +266,11 @@ function ListingCard({ listing }: { listing: Listing }) {
             {listing.description}
           </p>
         )}
+        <Button asChild variant="outline" size="sm" className="w-full mt-2">
+          <Link href={`/listings/${listing.id}`}>
+            {t("listings.viewDetails")}
+          </Link>
+        </Button>
       </CardContent>
     </Card>
   );

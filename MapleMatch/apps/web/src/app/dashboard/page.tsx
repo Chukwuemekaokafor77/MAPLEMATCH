@@ -63,7 +63,7 @@ export default function DashboardPage() {
               variant={hasProfile ? "outline" : "default"}
               size="sm"
             >
-              <Link href="/eligibility">
+              <Link href={hasProfile ? "/profile" : "/eligibility"}>
                 {hasProfile
                   ? t("dashboard.updateProfile")
                   : t("dashboard.startProfile")}

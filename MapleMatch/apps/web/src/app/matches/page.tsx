@@ -15,8 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSmartMatch } from "@/hooks/useApi";
-import type { SmartMatchResult } from "@/lib/api";
+import {
+  useSmartMatch,
+  useSmartMatchAndSave,
+  useUpdateMatchStatus,
+} from "@/hooks/useApi";
+import type { MatchRead, SmartMatchResult } from "@/lib/api";
 import {
   Sparkles,
   Clock,
@@ -24,21 +28,33 @@ import {
   Brain,
   ChevronDown,
   ChevronUp,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 
 export default function MatchesPage() {
   const { t } = useTranslation();
   const smartMatch = useSmartMatch();
+  const smartMatchAndSave = useSmartMatchAndSave();
   const [results, setResults] = useState<SmartMatchResult[]>([]);
+  const [matchIds, setMatchIds] = useState<Record<string, string>>({});
   const [hasRun, setHasRun] = useState(false);
 
+  const isPending = smartMatch.isPending || smartMatchAndSave.isPending;
+  const isError = smartMatch.isError || smartMatchAndSave.isError;
+  const errorMessage = smartMatch.error?.message ?? smartMatchAndSave.error?.message ?? "";
+
   const handleMatch = async () => {
-    const data = await smartMatch.mutateAsync({
-      use_semantic: false,
-      use_ml: true,
-      limit: 20,
-    });
-    setResults(data);
+    const [scored, saved] = await Promise.all([
+      smartMatch.mutateAsync({ use_semantic: false, use_ml: true, limit: 20 }),
+      smartMatchAndSave.mutateAsync({ use_semantic: false, use_ml: true }),
+    ]);
+    setResults(scored);
+    const idMap: Record<string, string> = {};
+    for (const m of saved as MatchRead[]) {
+      idMap[m.listing_id] = m.id;
+    }
+    setMatchIds(idMap);
     setHasRun(true);
   };
 
@@ -50,35 +66,29 @@ export default function MatchesPage() {
             <Sparkles className="size-7" />
             {t("matches.title")}
           </h1>
-          <p className="text-muted-foreground mt-1">
-            {t("matches.subtitle")}
-          </p>
+          <p className="text-muted-foreground mt-1">{t("matches.subtitle")}</p>
         </div>
-        <Button onClick={handleMatch} disabled={smartMatch.isPending} size="lg">
-          {smartMatch.isPending
-            ? t("common.loading")
-            : t("matches.findMatches")}
+        <Button onClick={handleMatch} disabled={isPending} size="lg">
+          {isPending ? t("common.loading") : t("matches.findMatches")}
         </Button>
       </div>
 
-      {smartMatch.isError && (
+      {isError && (
         <Card className="border-destructive mb-4">
           <CardContent className="py-4">
             <p className="text-destructive" role="alert">
-              {smartMatch.error.message}
+              {errorMessage}
             </p>
-            {smartMatch.error.message.includes("profile") && (
+            {errorMessage.includes("profile") && (
               <Button asChild variant="outline" className="mt-2">
-                <Link href="/eligibility">
-                  {t("matches.completeProfile")}
-                </Link>
+                <Link href="/eligibility">{t("matches.completeProfile")}</Link>
               </Button>
             )}
           </CardContent>
         </Card>
       )}
 
-      {smartMatch.isPending && (
+      {isPending && (
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-52 rounded-lg" />
@@ -86,7 +96,7 @@ export default function MatchesPage() {
         </div>
       )}
 
-      {hasRun && results.length === 0 && !smartMatch.isPending && (
+      {hasRun && results.length === 0 && !isPending && (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
             {t("matches.noResults")}
@@ -97,7 +107,12 @@ export default function MatchesPage() {
       {results.length > 0 && (
         <div className="space-y-4">
           {results.map((r, idx) => (
-            <MatchCard key={r.listing_id} result={r} rank={idx + 1} />
+            <MatchCard
+              key={r.listing_id}
+              result={r}
+              rank={idx + 1}
+              matchId={matchIds[r.listing_id]}
+            />
           ))}
         </div>
       )}
@@ -108,13 +123,23 @@ export default function MatchesPage() {
 function MatchCard({
   result,
   rank,
+  matchId,
 }: {
   result: SmartMatchResult;
   rank: number;
+  matchId?: string;
 }) {
   const { t } = useTranslation();
+  const updateStatus = useUpdateMatchStatus();
   const [expanded, setExpanded] = useState(false);
+  const [status, setStatus] = useState("pending");
   const pct = Math.round(result.final_score * 100);
+
+  const handleStatus = async (newStatus: "accepted" | "declined") => {
+    if (!matchId) return;
+    await updateStatus.mutateAsync({ id: matchId, status: newStatus });
+    setStatus(newStatus);
+  };
 
   return (
     <Card>
@@ -126,16 +151,36 @@ function MatchCard({
             </span>
             <div>
               <CardTitle className="text-lg">
-                {result.listing_title}
+                <Link
+                  href={`/listings/${result.listing_id}`}
+                  className="hover:underline"
+                >
+                  {result.listing_title}
+                </Link>
               </CardTitle>
               <CardDescription className="flex items-center gap-2 mt-0.5">
-                <Badge
-                  variant={result.eligible ? "default" : "destructive"}
-                >
+                <Badge variant={result.eligible ? "default" : "destructive"}>
                   {result.eligible
                     ? t("matches.eligible")
                     : t("matches.ineligible")}
                 </Badge>
+                {matchId && status !== "pending" && (
+                  <Badge
+                    variant={
+                      status === "accepted" ? "default" : "secondary"
+                    }
+                    className="gap-1"
+                  >
+                    {status === "accepted" ? (
+                      <CheckCircle className="size-3" />
+                    ) : (
+                      <XCircle className="size-3" />
+                    )}
+                    {status === "accepted"
+                      ? t("matches.accepted")
+                      : t("matches.declined")}
+                  </Badge>
+                )}
               </CardDescription>
             </div>
           </div>
@@ -147,6 +192,7 @@ function MatchCard({
           </div>
         </div>
       </CardHeader>
+
       <CardContent className="space-y-4">
         {/* Score bars */}
         <div className="grid grid-cols-3 gap-4">
@@ -194,7 +240,37 @@ function MatchCard({
           </div>
         )}
 
-        {/* Expandable details */}
+        {/* Accept / Decline */}
+        {matchId && status === "pending" && (
+          <div className="flex gap-2 pt-1">
+            <Button
+              size="sm"
+              disabled={updateStatus.isPending}
+              onClick={() => handleStatus("accepted")}
+              className="gap-1.5"
+            >
+              <CheckCircle className="size-3.5" />
+              {t("matches.accept")}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={updateStatus.isPending}
+              onClick={() => handleStatus("declined")}
+              className="gap-1.5"
+            >
+              <XCircle className="size-3.5" />
+              {t("matches.decline")}
+            </Button>
+            <Button asChild size="sm" variant="ghost" className="ml-auto">
+              <Link href={`/listings/${result.listing_id}`}>
+                {t("listings.viewDetails")}
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {/* Expand toggle */}
         <Button
           variant="ghost"
           size="sm"
@@ -213,9 +289,7 @@ function MatchCard({
           <div className="space-y-3 text-sm">
             <Separator />
             <div>
-              <h4 className="font-medium mb-1">
-                {t("matches.scoringFactors")}
-              </h4>
+              <h4 className="font-medium mb-1">{t("matches.scoringFactors")}</h4>
               {result.factors.map((f, i) => (
                 <div
                   key={i}
@@ -231,9 +305,7 @@ function MatchCard({
             </div>
             {result.wait_time_factors.length > 0 && (
               <div>
-                <h4 className="font-medium mb-1">
-                  {t("matches.waitFactors")}
-                </h4>
+                <h4 className="font-medium mb-1">{t("matches.waitFactors")}</h4>
                 <ul className="list-disc ml-4 text-muted-foreground space-y-0.5">
                   {result.wait_time_factors.map((f, i) => (
                     <li key={i}>{f}</li>
@@ -242,9 +314,7 @@ function MatchCard({
               </div>
             )}
             <div>
-              <h4 className="font-medium mb-1">
-                {t("matches.explanation")}
-              </h4>
+              <h4 className="font-medium mb-1">{t("matches.explanation")}</h4>
               <pre className="whitespace-pre-wrap text-muted-foreground text-xs bg-muted p-2 rounded">
                 {result.explanation}
               </pre>

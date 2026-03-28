@@ -33,6 +33,18 @@ export function useSaveProfile() {
   });
 }
 
+export function useUpdateProfile() {
+  const getToken = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: Partial<EligibilityProfileCreate>) => {
+      const token = await getToken();
+      return api.updateProfile(data, token);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["eligibility-profile"] }),
+  });
+}
+
 // --- Listings ---
 
 export function useListings(params?: URLSearchParams) {
