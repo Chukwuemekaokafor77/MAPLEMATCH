@@ -16,17 +16,26 @@ security = HTTPBearer()
 _jwks_cache: dict | None = None
 
 
+def _build_jwks_url() -> str:
+    """Derive the Clerk JWKS URL from config."""
+    if settings.jwks_url:
+        return settings.jwks_url
+    # Fallback: base64-decode the publishable key to get the instance domain
+    import base64
+    encoded = settings.clerk_publishable_key.split("_")[-1]
+    padded = encoded + "=" * (-len(encoded) % 4)
+    domain = base64.urlsafe_b64decode(padded).decode("utf-8").rstrip("$")
+    return f"https://{domain}/.well-known/jwks.json"
+
+
 async def _get_clerk_jwks() -> dict:
     """Fetch Clerk's JWKS (JSON Web Key Set) for JWT verification."""
     global _jwks_cache
     if _jwks_cache is not None:
         return _jwks_cache
 
-    clerk_domain = settings.clerk_publishable_key.split("_")[-1]
-    jwks_url = f"https://{clerk_domain}.clerk.accounts.dev/.well-known/jwks.json"
-
     async with httpx.AsyncClient() as client:
-        response = await client.get(jwks_url)
+        response = await client.get(_build_jwks_url())
         response.raise_for_status()
         _jwks_cache = response.json()
         return _jwks_cache

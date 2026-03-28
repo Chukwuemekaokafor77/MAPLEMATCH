@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     # Clerk
     clerk_secret_key: str = ""
     clerk_publishable_key: str = ""
+    jwks_url: str = ""
 
     # CORS — accepts a JSON string (["https://a.com","https://b.com"]) or
     # a single URL, in addition to a native list[str] from pydantic-settings.
