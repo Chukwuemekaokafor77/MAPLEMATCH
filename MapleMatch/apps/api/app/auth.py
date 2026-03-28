@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 
 import httpx
 import jwt
@@ -108,8 +108,8 @@ async def get_current_user(
             email=email,
             first_name=first_name,
             last_name=last_name,
-            created_at=datetime.now(UTC),
-            updated_at=datetime.now(UTC),
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
         )
         session.add(user)
         await session.commit()
