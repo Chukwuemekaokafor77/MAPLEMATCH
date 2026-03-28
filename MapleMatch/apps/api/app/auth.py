@@ -4,6 +4,7 @@ import httpx
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
@@ -111,9 +112,14 @@ async def get_current_user(
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
         )
-        session.add(user)
-        await session.commit()
-        await session.refresh(user)
+        try:
+            session.add(user)
+            await session.commit()
+            await session.refresh(user)
+        except IntegrityError:
+            await session.rollback()
+            result = await session.execute(select(User).where(User.clerk_id == clerk_id))
+            user = result.scalar_one()
 
     if not user.is_active:
         raise HTTPException(
