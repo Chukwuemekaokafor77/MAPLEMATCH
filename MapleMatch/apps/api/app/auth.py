@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import httpx
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -88,10 +90,21 @@ async def get_current_user(
     user = result.scalar_one_or_none()
 
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found. Complete registration first.",
+        # Auto-provision user from JWT claims on first sign-in
+        email = payload.get("email") or f"{clerk_id}@placeholder.maplematch"
+        first_name = payload.get("first_name") or payload.get("given_name") or ""
+        last_name = payload.get("last_name") or payload.get("family_name") or ""
+        user = User(
+            clerk_id=clerk_id,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
 
     if not user.is_active:
         raise HTTPException(
