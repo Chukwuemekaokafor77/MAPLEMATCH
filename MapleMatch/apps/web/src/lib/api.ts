@@ -161,6 +161,46 @@ export interface EligibilityCheckResult {
   listing_title: string;
 }
 
+export interface DocumentItem {
+  id: string;
+  user_id: string;
+  doc_type: string;
+  file_url: string;
+  original_filename: string;
+  status: string;
+  ocr_text: string | null;
+  reviewer_notes: string | null;
+  created_at: string;
+}
+
+export interface DocumentCreate {
+  doc_type: string;
+  file_url: string;
+  original_filename: string;
+}
+
+export interface SyncLog {
+  id: string;
+  source: string;
+  records_fetched: number;
+  records_upserted: number;
+  status: string;
+  error_message: string | null;
+  created_at: string;
+}
+
+export interface UserRead {
+  id: string;
+  clerk_id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  preferred_language: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 // === API Functions ===
 
 export const api = {
@@ -169,9 +209,7 @@ export const api = {
     apiFetch("/users/register", { method: "POST", body: JSON.stringify(data) }, token),
 
   getMe: (token?: string | null) =>
-    apiFetch<{ id: string; email: string; first_name: string; last_name: string; role: string }>(
-      "/users/me", {}, token,
-    ),
+    apiFetch<UserRead>("/users/me", {}, token),
 
   // Eligibility Profile
   getMyProfile: (token?: string | null) =>
@@ -238,6 +276,36 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ listing_id: listingId }),
     }, token),
+
+  // Documents
+  getMyDocuments: (token?: string | null) =>
+    apiFetch<DocumentItem[]>("/documents/", {}, token),
+
+  uploadDocument: (data: DocumentCreate, token?: string | null) =>
+    apiFetch<DocumentItem>("/documents/", { method: "POST", body: JSON.stringify(data) }, token),
+
+  deleteDocument: (id: string, token?: string | null) =>
+    apiFetch<void>(`/documents/${id}`, { method: "DELETE" }, token),
+
+  // Admin — documents
+  getPendingDocuments: (token?: string | null) =>
+    apiFetch<DocumentItem[]>("/documents/review/pending", {}, token),
+
+  reviewDocument: (id: string, status: string, notes: string | undefined, token?: string | null) =>
+    apiFetch<DocumentItem>(`/documents/${id}/review`, {
+      method: "PATCH",
+      body: JSON.stringify({ status, reviewer_notes: notes ?? null }),
+    }, token),
+
+  // Admin — CMHC sync
+  triggerSync: (province?: string, city?: string, token?: string | null) =>
+    apiFetch<SyncLog>("/cmhc/sync", {
+      method: "POST",
+      body: JSON.stringify({ province: province ?? null, city: city ?? null }),
+    }, token),
+
+  getSyncLogs: (token?: string | null) =>
+    apiFetch<SyncLog[]>("/cmhc/sync/logs", {}, token),
 
   // Notifications
   getNotifications: (params?: URLSearchParams, token?: string | null) =>

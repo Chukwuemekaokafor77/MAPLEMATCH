@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, type EligibilityProfileCreate } from "@/lib/api";
+import { api, type EligibilityProfileCreate, type DocumentCreate } from "@/lib/api";
 
 function useToken() {
   const { getToken } = useAuth();
@@ -151,6 +151,113 @@ export function useEstimateWaitTime() {
     mutationFn: async (listingId: string) => {
       const token = await getToken();
       return api.estimateWaitTime(listingId, token);
+    },
+  });
+}
+
+// --- Current user (with role) ---
+
+export function useMe() {
+  const getToken = useToken();
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const token = await getToken();
+      return api.getMe(token);
+    },
+  });
+}
+
+// --- Documents ---
+
+export function useMyDocuments() {
+  const getToken = useToken();
+  return useQuery({
+    queryKey: ["documents"],
+    queryFn: async () => {
+      const token = await getToken();
+      return api.getMyDocuments(token);
+    },
+  });
+}
+
+export function useUploadDocument() {
+  const getToken = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: DocumentCreate) => {
+      const token = await getToken();
+      return api.uploadDocument(data, token);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["documents"] }),
+  });
+}
+
+export function useDeleteDocument() {
+  const getToken = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const token = await getToken();
+      return api.deleteDocument(id, token);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["documents"] }),
+  });
+}
+
+// --- Admin ---
+
+export function usePendingDocuments() {
+  const getToken = useToken();
+  return useQuery({
+    queryKey: ["admin", "pending-documents"],
+    queryFn: async () => {
+      const token = await getToken();
+      return api.getPendingDocuments(token);
+    },
+  });
+}
+
+export function useReviewDocument() {
+  const getToken = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      status,
+      notes,
+    }: {
+      id: string;
+      status: string;
+      notes?: string;
+    }) => {
+      const token = await getToken();
+      return api.reviewDocument(id, status, notes, token);
+    },
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: ["admin", "pending-documents"] }),
+  });
+}
+
+export function useTriggerSync() {
+  const getToken = useToken();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (opts: { province?: string; city?: string } = {}) => {
+      const token = await getToken();
+      return api.triggerSync(opts.province, opts.city, token);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["sync-logs"] }),
+  });
+}
+
+export function useSyncLogs() {
+  const getToken = useToken();
+  return useQuery({
+    queryKey: ["sync-logs"],
+    queryFn: async () => {
+      const token = await getToken();
+      return api.getSyncLogs(token);
     },
   });
 }

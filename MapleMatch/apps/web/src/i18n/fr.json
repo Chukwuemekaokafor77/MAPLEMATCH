@@ -9,6 +9,7 @@
     "dashboard": "Tableau de bord",
     "listings": "Annonces",
     "matches": "Mes jumelages",
+    "documents": "Documents",
     "signIn": "Connexion",
     "signUp": "Inscription",
     "signOut": "Déconnexion"
@@ -215,6 +216,51 @@
     "cancel": "Annuler",
     "back": "Retour",
     "next": "Suivant"
+  },
+  "documents": {
+    "title": "Mes documents",
+    "subtitle": "Téléversez des pièces justificatives pour vos demandes de logement.",
+    "upload": "Téléverser un document",
+    "uploadDesc": "Partagez un lien vers votre document. Les administrateurs examineront toutes les soumissions.",
+    "docType": "Type de document",
+    "filename": "Nom du fichier",
+    "fileUrl": "URL du document",
+    "urlHint": "Téléversez sur Google Drive ou Dropbox, activez l'accès 'Toute personne avec le lien', puis collez l'URL ici.",
+    "submit": "Soumettre le document",
+    "myDocs": "Documents soumis",
+    "empty": "Aucun document téléversé pour l'instant.",
+    "viewFile": "Voir le fichier",
+    "delete": "Supprimer le document",
+    "status": {
+      "pending": "En attente de révision",
+      "verified": "Vérifié",
+      "rejected": "Rejeté"
+    },
+    "types": {
+      "income_proof": "Preuve de revenu",
+      "government_id": "Pièce d'identité gouvernementale",
+      "residency_proof": "Preuve de résidence",
+      "other": "Autre"
+    }
+  },
+  "admin": {
+    "title": "Tableau de bord administrateur",
+    "subtitle": "Examinez les documents, déclenchez des synchronisations et gérez le contenu.",
+    "accessDenied": "Accès refusé",
+    "accessDeniedDesc": "Cette page nécessite le rôle administrateur.",
+    "pendingDocs": "Documents en attente",
+    "pendingDocsEmpty": "Aucun document en attente de révision.",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "notes": "Notes du réviseur",
+    "notesPlaceholder": "Notes facultatives pour le demandeur...",
+    "cmhcSync": "Synchronisation SCHL",
+    "triggerSync": "Démarrer une sync",
+    "triggerSyncDesc": "Récupère et met à jour les annonces depuis toutes les sources ouvertes. Sécuritaire à exécuter plusieurs fois.",
+    "runSync": "Lancer la sync",
+    "syncLogs": "Historique des syncs",
+    "syncResult": "{{fetched}} récupérés · {{upserted}} insérés",
+    "noLogs": "Aucun historique de sync pour l'instant."
   },
   "a11y": {
     "skipToContent": "Passer au contenu principal",

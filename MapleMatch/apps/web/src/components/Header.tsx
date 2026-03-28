@@ -48,6 +48,9 @@ export default function Header() {
               <Button asChild variant="ghost" size="sm">
                 <Link href="/matches">{t("nav.matches")}</Link>
               </Button>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/documents">{t("nav.documents")}</Link>
+              </Button>
               <NotificationBell />
               <UserButton />
             </>
@@ -98,6 +101,9 @@ export default function Header() {
               </Button>
               <Button asChild variant="ghost" className="w-full justify-start" onClick={close}>
                 <Link href="/matches">{t("nav.matches")}</Link>
+              </Button>
+              <Button asChild variant="ghost" className="w-full justify-start" onClick={close}>
+                <Link href="/documents">{t("nav.documents")}</Link>
               </Button>
               <Separator className="my-2" />
               <div className="px-1 py-1">

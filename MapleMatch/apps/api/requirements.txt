@@ -1,6 +1,7 @@
 # FastAPI
 fastapi[standard]>=0.115.0
 uvicorn[standard]>=0.34.0
+slowapi>=0.1.9
 
 # Database
 sqlmodel>=0.0.22

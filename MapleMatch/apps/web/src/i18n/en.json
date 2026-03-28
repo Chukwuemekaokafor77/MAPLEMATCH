@@ -9,6 +9,7 @@
     "dashboard": "Dashboard",
     "listings": "Listings",
     "matches": "My Matches",
+    "documents": "Documents",
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "signOut": "Sign Out"
@@ -215,6 +216,51 @@
     "cancel": "Cancel",
     "back": "Back",
     "next": "Next"
+  },
+  "documents": {
+    "title": "My Documents",
+    "subtitle": "Upload supporting documents for your housing applications.",
+    "upload": "Upload a Document",
+    "uploadDesc": "Share a link to your document. Admins will review all submissions.",
+    "docType": "Document Type",
+    "filename": "File Name",
+    "fileUrl": "Document URL",
+    "urlHint": "Upload to Google Drive or Dropbox, enable 'Anyone with the link' access, then paste the URL here.",
+    "submit": "Submit Document",
+    "myDocs": "Submitted Documents",
+    "empty": "No documents uploaded yet.",
+    "viewFile": "View file",
+    "delete": "Delete document",
+    "status": {
+      "pending": "Pending Review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "types": {
+      "income_proof": "Proof of Income",
+      "government_id": "Government ID",
+      "residency_proof": "Proof of Residency",
+      "other": "Other"
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Review documents, trigger data syncs, and manage platform content.",
+    "accessDenied": "Access Denied",
+    "accessDeniedDesc": "This page requires admin role.",
+    "pendingDocs": "Pending Documents",
+    "pendingDocsEmpty": "No documents awaiting review.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "notes": "Reviewer Notes",
+    "notesPlaceholder": "Optional notes for the applicant...",
+    "cmhcSync": "CMHC Sync",
+    "triggerSync": "Trigger Sync",
+    "triggerSyncDesc": "Fetch and upsert listings from all open-data sources. Safe to run repeatedly.",
+    "runSync": "Run Sync",
+    "syncLogs": "Sync History",
+    "syncResult": "{{fetched}} fetched · {{upserted}} upserted",
+    "noLogs": "No sync history yet."
   },
   "a11y": {
     "skipToContent": "Skip to main content",

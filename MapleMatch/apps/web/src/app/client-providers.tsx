@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import Header from "@/components/Header";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import "@/i18n";
 
 export default function ClientProviders({ children }: { children: ReactNode }) {
@@ -25,7 +26,9 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
           Skip to main content
         </a>
         <Header />
-        <div id="main-content">{children}</div>
+        <ErrorBoundary>
+          <div id="main-content">{children}</div>
+        </ErrorBoundary>
       </div>
     </QueryClientProvider>
   );
