@@ -12,7 +12,8 @@
     "documents": "Documents",
     "signIn": "Connexion",
     "signUp": "Inscription",
-    "signOut": "Déconnexion"
+    "signOut": "Déconnexion",
+    "admin": "Admin"
   },
   "home": {
     "hero": "Trouvez votre logement abordable au Canada",

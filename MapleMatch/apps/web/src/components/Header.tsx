@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import NotificationBell from "@/components/NotificationBell";
+import { useMe } from "@/hooks/useApi";
 import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const { t } = useTranslation();
   const { isSignedIn, isLoaded } = useAuth();
+  const { data: me } = useMe();
+  const isAdmin = me?.role === "admin";
   const [menuOpen, setMenuOpen] = useState(false);
 
   const close = () => setMenuOpen(false);
@@ -51,6 +54,11 @@ export default function Header() {
               <Button asChild variant="ghost" size="sm">
                 <Link href="/documents">{t("nav.documents")}</Link>
               </Button>
+              {isAdmin && (
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/admin">{t("nav.admin")}</Link>
+                </Button>
+              )}
               <NotificationBell />
               <UserButton />
             </>
@@ -105,6 +113,11 @@ export default function Header() {
               <Button asChild variant="ghost" className="w-full justify-start" onClick={close}>
                 <Link href="/documents">{t("nav.documents")}</Link>
               </Button>
+              {isAdmin && (
+                <Button asChild variant="ghost" className="w-full justify-start" onClick={close}>
+                  <Link href="/admin">{t("nav.admin")}</Link>
+                </Button>
+              )}
               <Separator className="my-2" />
               <div className="px-1 py-1">
                 <UserButton />

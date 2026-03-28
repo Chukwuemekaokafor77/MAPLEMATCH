@@ -12,7 +12,8 @@
     "documents": "Documents",
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "admin": "Admin"
   },
   "home": {
     "hero": "Find Your Affordable Home in Canada",
