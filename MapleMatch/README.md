@@ -2,83 +2,51 @@
 
 AI-Powered Affordable Housing Matching Platform for Canada.
 
-## Status
+**Live:** https://web-eight-gamma-54.vercel.app &nbsp;|&nbsp; **API:** https://maplematch-api.onrender.com/docs
 
-**Branch**: `fix/security-updates` | **Last updated**: March 2026
+---
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000 · Swagger UI: http://localhost:8000/docs
-- **Database**: Local PostgreSQL (Docker) — 74 listings across all 13 provinces/territories
-- **Authentication**: Clerk
+## What It Does
 
-## Quick Start
+MapleMatch connects Canadians with affordable housing, subsidies, co-ops, and waitlists across all 13 provinces and territories. Applicants complete a short eligibility profile and get instantly matched with listings ranked by income, household size, priority group, and predicted wait time — powered by a three-layer AI scoring engine.
 
-```bash
-# 1. Start infrastructure (PostgreSQL + Redis)
-docker run -d --name maplematch-postgres -p 5432:5432 \
-  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=maplematch \
-  postgis/postgis:16-3.4
-
-docker run -d --name maplematch-redis -p 6379:6379 redis:7-alpine
-
-# 2. Install frontend deps
-npm install
-
-# 3. Install backend deps
-cd apps/api
-python -m venv .venv
-.venv/Scripts/activate        # Windows
-# source .venv/bin/activate   # Linux/Mac
-pip install -r requirements.txt
-
-# 4. Run database migrations
-DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/maplematch" \
-  python -m alembic upgrade head
-
-# 5. Seed listings (74 listings, all 13 provinces/territories)
-DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/maplematch" \
-  python scripts/seed_listings.py
-cd ../..
-
-# 6. Start the API (separate terminal)
-cd apps/api
-DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/maplematch" \
-REDIS_URL="redis://localhost:6379/0" \
-CLERK_SECRET_KEY="<your-key>" \
-JWKS_URL="https://<your-clerk-domain>/.well-known/jwks.json" \
-  python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-# 7. Start the frontend (separate terminal)
-npm run dev
-```
+---
 
 ## Features
 
 | Feature | Status |
 |---|---|
-| User authentication (Clerk JWT) | Done |
-| Eligibility wizard (4-step income/household profile) | Done |
-| Housing listings with filters (province, city, rent, bedrooms, RGI, accessible) | Done |
-| AI matching engine (rules + semantic + ML scoring) | Done |
-| Wait-time prediction | Done |
-| Document upload & OCR review | Done |
-| Bilingual EN/FR interface | Done |
-| WCAG-accessible UI (skip link, ARIA, screen reader) | Done |
-| Real housing data pipeline | Done |
-| Email notifications (SMTP) | Done |
-| Admin sync/seed endpoints | Done |
+| Clerk JWT authentication with auto-provisioning | ✅ |
+| Eligibility wizard — income, household, location, consent | ✅ |
+| Listings with real-time filters (province, city, rent, RGI, accessibility) | ✅ |
+| Listing detail page with eligibility check + wait time estimate | ✅ |
+| AI matching engine — rules + semantic + ML scoring | ✅ |
+| Accept / decline matches with status tracking | ✅ |
+| Document upload + admin review workflow (proto-KYC) | ✅ |
+| Real-time notification bell | ✅ |
+| Fully bilingual EN/FR interface | ✅ |
+| WCAG-accessible UI (skip links, ARIA, screen reader support) | ✅ |
+| Admin dashboard — pending docs, CMHC sync, sync history | ✅ |
+| Rate limiting (120 req/min) | ✅ |
+| Daily automated data sync via GitHub Actions | ✅ |
 
-## Real Data Pipeline
+---
 
-MapleMatch serves real Canadian affordable housing data without requiring any paid API credentials.
+## Data Pipeline
 
-**Sources (tried in order on every sync):**
+MapleMatch pulls real Canadian affordable housing data from 6 free open-data sources — no paid API credentials required.
 
-1. **Toronto Open Data CKAN** — Affordable Rental Housing Register (no auth)
-2. **Canada Open Government Portal CKAN** — CMHC datasets (no auth)
-3. **Built-in curated seed** — 74 listings across all 13 provinces/territories (always available)
+**Sources (polled on every sync):**
 
-**Seed coverage:**
+1. **Toronto Open Data CKAN** — Affordable Rental Housing Register
+2. **Canada Open Government Portal CKAN** — CMHC datasets
+3. **Ontario Data Catalogue CKAN** — provincial affordable housing
+4. **BC Data Catalogue CKAN** — BC Housing registry
+5. **Montreal Open Data CKAN** — social/affordable housing
+6. **Alberta Open Data CKAN** — provincial housing programs
+7. **Built-in curated seed** — 74 listings across all 13 provinces/territories (always available as fallback)
+
+**Built-in seed coverage:**
 
 | Province/Territory | Listings |
 |---|---|
@@ -96,61 +64,66 @@ MapleMatch serves real Canadian affordable housing data without requiring any pa
 | Nunavut (NU) | 2 |
 | Yukon (YT) | 2 |
 
-**Re-seeding:**
+Sync runs automatically every day at 06:00 UTC via GitHub Actions. Admins can also trigger a manual sync from the Admin Dashboard.
 
-```bash
-# Via CLI script (no auth required)
-cd apps/api
-python scripts/seed_listings.py
-
-# Filter to one province
-python scripts/seed_listings.py --province BC
-
-# Via API (admin role required)
-POST /cmhc/seed
-POST /cmhc/sync
-```
+---
 
 ## Architecture
 
 ```
 apps/
-  web/          Next.js 16 · React 19 · TypeScript · Tailwind v4 · shadcn/ui
-  api/          Python 3.12 · FastAPI · SQLModel · asyncpg · httpx
+  web/    Next.js App Router · React · TypeScript · Tailwind · shadcn/ui
+  api/    Python · FastAPI · SQLModel · asyncpg · Alembic
 
 Infrastructure:
-  PostgreSQL 16 + PostGIS   (spatial queries, listings store)
-  Redis 7                   (session cache, rate limiting)
-  Clerk                     (JWT auth, Canadian data residency)
+  Neon          Serverless PostgreSQL (Canadian data residency)
+  Render        FastAPI backend (free tier, auto-deploy on push)
+  Vercel        Next.js frontend (auto-deploy on push)
+  Clerk         JWT auth + identity management
+  GitHub Actions  Daily data sync cron (06:00 UTC)
 ```
 
 ```mermaid
 graph TB
     User --> Clerk[Clerk Auth]
-    Clerk --> Web[Next.js Frontend]
-    Clerk --> API[FastAPI Backend]
-    Web --> API
-    API --> OpenData[Toronto / Canada Open Data CKAN]
+    Clerk --> Web[Next.js — Vercel]
+    Web --> API[FastAPI — Render]
+    API --> CKAN[6x CKAN Open Data Sources]
     API --> Seed[Built-in seed dataset]
-    API --> DB[(PostgreSQL + PostGIS)]
-    API --> Cache[(Redis)]
+    API --> DB[(Neon PostgreSQL)]
+    GH[GitHub Actions cron] --> API
 ```
 
-## Testing
+---
+
+## Local Development
 
 ```bash
-# Backend
-cd apps/api
-pytest
-pytest --cov=app                 # Coverage (90%+ enforced)
-ruff check --fix && ruff format  # Lint + format
+# 1. Start infrastructure
+docker run -d --name maplematch-postgres -p 5432:5432 \
+  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=maplematch \
+  postgres:16
 
-# Frontend
+docker run -d --name maplematch-redis -p 6379:6379 redis:7-alpine
+
+# 2. Backend setup
+cd apps/api
+python -m venv .venv
+source .venv/bin/activate        # Linux/Mac
+# .venv/Scripts/activate         # Windows
+pip install -r requirements.txt
+python -m alembic upgrade head
+
+# 3. Start API (port 8000)
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 4. Frontend setup (separate terminal)
 cd apps/web
-npm test                         # Vitest + React Testing Library (51 tests)
-npm run lint
-npm run build
+npm install
+npm run dev                      # port 3000
 ```
+
+---
 
 ## Environment Variables
 
@@ -158,9 +131,11 @@ npm run build
 ```
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/maplematch
 REDIS_URL=redis://localhost:6379/0
+CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 JWKS_URL=https://<clerk-domain>/.well-known/jwks.json
 CORS_ORIGINS=["http://localhost:3000"]
+SYNC_SECRET=<random-hex-secret-for-scheduled-sync>
 DEBUG=true
 ```
 
@@ -173,35 +148,43 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Optional — if you obtain CMHC API credentials:
-```
-CMHC_API_KEY=your-key
-CMHC_API_URL=https://api.cmhc-schl.gc.ca
-```
+---
 
 ## Production Deployment
 
-```bash
-# Canadian cloud regions (data residency)
-#   AWS: ca-central-1 (Montréal)
-#   GCP: northamerica-northeast1 (Montréal)
+| Service | Platform | Notes |
+|---|---|---|
+| Frontend | Vercel | Auto-deploys on push to `fix/security-updates` |
+| Backend | Render | Auto-deploys on push; runs `alembic upgrade head` on build |
+| Database | Neon | Serverless Postgres, Canadian region |
 
-docker compose -f docker-compose.prod.yml up -d
+**Render environment variables required:**
+`DATABASE_URL`, `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `JWKS_URL`, `CORS_ORIGINS`, `SYNC_SECRET`
+
+**GitHub Actions secret required:**
+`SYNC_SECRET` — must match the value set on Render
+
+---
+
+## Admin Setup
+
+After first sign-in, promote a user to admin via Neon SQL Editor:
+
+```sql
+UPDATE users SET role = 'admin' WHERE clerk_id = 'user_xxxxx';
 ```
 
-## CI/CD
+The Admin tab appears in the nav automatically for admin-role users.
 
-GitHub Actions on every PR and push to `main`:
-- Backend: Ruff lint → pytest (90%+ coverage) → pip-audit + bandit security scan
-- Frontend: ESLint → Vitest → Next.js build
-- Docker compose build check
-- Dependabot for automated dependency updates
+---
 
-## Docs
+## API Reference
 
-- [Project Vision & Roadmap](docs/VISION.md)
-- [Security Policy](SECURITY.md)
-- API Reference: http://localhost:8000/docs (Swagger UI)
+Swagger UI available at `/docs` on any running instance:
+- Local: http://localhost:8000/docs
+- Production: https://maplematch-api.onrender.com/docs
+
+---
 
 ## License
 
