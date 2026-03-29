@@ -176,7 +176,7 @@ async def update_match_status(
         )
 
     match.status = data.status
-    match.updated_at = datetime.now(UTC)
+    match.updated_at = datetime.utcnow()
     session.add(match)
     await session.commit()
     await session.refresh(match)

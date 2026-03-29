@@ -34,7 +34,7 @@ async def run_sync(
 ) -> CmhcSyncLog:
     """Fetch housing data and upsert listings. Returns the sync-log record."""
     source = "cmhc-open-data"
-    log = CmhcSyncLog(source=source, started_at=datetime.now(UTC))
+    log = CmhcSyncLog(source=source, started_at=datetime.utcnow())
     session.add(log)
 
     try:
@@ -50,7 +50,7 @@ async def run_sync(
         log.status = "error"
         log.error_message = str(exc)[:500]
 
-    log.completed_at = datetime.now(UTC)
+    log.completed_at = datetime.utcnow()
     await session.commit()
     await session.refresh(log)
     return log
@@ -195,7 +195,7 @@ async def _upsert_listings(
         else:
             if not rec_clean.get("rent_amount") or rec_clean["rent_amount"] <= 0:
                 rec_clean["rent_amount"] = 1.0
-            now = datetime.now(UTC).replace(tzinfo=None)  # naive UTC — matches TIMESTAMP WITHOUT TIME ZONE column
+            now = datetime.utcnow().replace(tzinfo=None)  # naive UTC — matches TIMESTAMP WITHOUT TIME ZONE column
             listing = Listing(**rec_clean, status=ListingStatus.active, created_at=now, updated_at=now)
             session.add(listing)
             created += 1

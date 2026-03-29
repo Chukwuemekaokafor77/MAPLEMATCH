@@ -74,8 +74,8 @@ class User(SQLModel, table=True):
     role: UserRole = Field(default=UserRole.applicant, index=True)
     preferred_language: str = Field(default="en")
     is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    updated_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     profile: Optional["EligibilityProfile"] = Relationship(back_populates="user")
     documents: list["Document"] = Relationship(back_populates="user")
@@ -100,8 +100,8 @@ class EligibilityProfile(SQLModel, table=True):
     needs_accessible_unit: bool = Field(default=False)
     consent_given: bool = Field(default=False)
     consent_date: datetime | None = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    updated_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     user: User = Relationship(back_populates="profile")
 
@@ -133,8 +133,8 @@ class Listing(SQLModel, table=True):
     max_household_size: int | None = None
     priority_groups: str = ""  # comma-separated PriorityGroup values
     estimated_wait_days: int | None = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    updated_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     matches: list["Match"] = Relationship(back_populates="listing")
 
@@ -150,8 +150,8 @@ class Document(SQLModel, table=True):
     status: DocumentStatus = Field(default=DocumentStatus.pending)
     ocr_text: str | None = None
     reviewer_notes: str | None = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    updated_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     user: User = Relationship(back_populates="documents")
 
@@ -165,8 +165,8 @@ class Match(SQLModel, table=True):
     score: float = Field(default=0.0)
     explanation: str = ""  # human-readable match reasoning
     status: MatchStatus = Field(default=MatchStatus.pending, index=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    updated_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     user: User = Relationship(back_populates="matches")
     listing: Listing = Relationship(back_populates="matches")
@@ -182,7 +182,7 @@ class Notification(SQLModel, table=True):
     body: str = ""
     is_read: bool = Field(default=False, index=True)
     related_id: uuid.UUID | None = None  # optional link to match/listing/document
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
     user: User = Relationship(back_populates="notifications")
 
@@ -197,5 +197,5 @@ class CmhcSyncLog(SQLModel, table=True):
     records_updated: int = 0
     status: str = "success"  # success, partial, failed
     error_message: str | None = None
-    started_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    started_at: datetime = Field(default_factory=lambda: datetime.utcnow())
     completed_at: datetime | None = None

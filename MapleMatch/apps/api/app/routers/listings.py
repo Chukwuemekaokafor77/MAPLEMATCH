@@ -129,7 +129,7 @@ async def update_listing(
     update_data = data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(listing, field, value)
-    listing.updated_at = datetime.now(UTC)
+    listing.updated_at = datetime.utcnow()
     session.add(listing)
     await session.commit()
     await session.refresh(listing)
@@ -151,7 +151,7 @@ async def delete_listing(
             detail="Listing not found",
         )
     listing.status = ListingStatus.inactive
-    listing.updated_at = datetime.now(UTC)
+    listing.updated_at = datetime.utcnow()
     session.add(listing)
     await session.commit()
 

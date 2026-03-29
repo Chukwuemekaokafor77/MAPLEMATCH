@@ -147,7 +147,7 @@ async def review_document(
     document.status = data.status
     if data.reviewer_notes is not None:
         document.reviewer_notes = data.reviewer_notes
-    document.updated_at = datetime.now(UTC)
+    document.updated_at = datetime.utcnow()
     session.add(document)
     await session.commit()
     await session.refresh(document)

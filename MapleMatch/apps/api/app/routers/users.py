@@ -65,7 +65,7 @@ async def update_me(
     update_data = data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(user, field, value)
-    user.updated_at = datetime.now(UTC)
+    user.updated_at = datetime.utcnow()
     session.add(user)
     await session.commit()
     await session.refresh(user)
@@ -94,7 +94,7 @@ async def create_eligibility_profile(
 
     profile = EligibilityProfile(user_id=user.id, **data.model_dump())
     if profile.consent_given:
-        profile.consent_date = datetime.now(UTC)
+        profile.consent_date = datetime.utcnow()
 
     session.add(profile)
     await session.commit()
@@ -142,9 +142,9 @@ async def update_eligibility_profile(
         setattr(profile, field, value)
 
     if "consent_given" in update_data and update_data["consent_given"]:
-        profile.consent_date = datetime.now(UTC)
+        profile.consent_date = datetime.utcnow()
 
-    profile.updated_at = datetime.now(UTC)
+    profile.updated_at = datetime.utcnow()
     session.add(profile)
     await session.commit()
     await session.refresh(profile)
