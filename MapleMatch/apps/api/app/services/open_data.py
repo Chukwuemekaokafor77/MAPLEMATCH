@@ -3,7 +3,11 @@
 Sources attempted in order:
   1. Toronto Open Data (CKAN) — Affordable Rental Housing Register
   2. Canada Open Government Portal (CKAN) — CMHC rental data
-  3. Built-in curated seed records (always succeeds)
+  3. Ontario Data Catalogue (CKAN) — provincial affordable housing
+  4. BC Data Catalogue (CKAN) — BC Housing datasets
+  5. Montreal Open Data (CKAN) — social/affordable housing
+  6. Alberta Open Data (CKAN) — provincial housing programs
+  7. Built-in curated seed records (always succeeds)
 
 All fetchers are async and return the same normalised list[dict] shape
 that _upsert_listings() in cmhc_sync.py expects.
@@ -16,8 +20,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_TORONTO_CKAN = "https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action"
-_CANADA_CKAN = "https://open.canada.ca/data/en/api/3/action"
+_TORONTO_CKAN  = "https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action"
+_CANADA_CKAN   = "https://open.canada.ca/data/en/api/3/action"
+_ONTARIO_CKAN  = "https://data.ontario.ca/api/3/action"
+_BC_CKAN       = "https://catalogue.data.gov.bc.ca/api/3/action"
+_MONTREAL_CKAN = "https://donnees.montreal.ca/api/3/action"
+_ALBERTA_CKAN  = "https://open.alberta.ca/api/3/action"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Public entry-point
@@ -44,6 +52,34 @@ async def fetch_all_open_data(
     canada = await _fetch_canada_open()
     logger.info("Canada Open Data: %d records fetched", len(canada))
     records.extend(canada)
+
+    ontario = await _fetch_ckan_province(
+        _ONTARIO_CKAN, "affordable housing", "ON", "Ontario",
+        search_filter=None, max_packages=3,
+    )
+    logger.info("Ontario Data Catalogue: %d records fetched", len(ontario))
+    records.extend(ontario)
+
+    bc = await _fetch_ckan_province(
+        _BC_CKAN, "affordable housing rental", "BC", "Vancouver",
+        search_filter=None, max_packages=3,
+    )
+    logger.info("BC Data Catalogue: %d records fetched", len(bc))
+    records.extend(bc)
+
+    montreal = await _fetch_ckan_province(
+        _MONTREAL_CKAN, "logement abordable", "QC", "Montréal",
+        search_filter=None, max_packages=3,
+    )
+    logger.info("Montreal Open Data: %d records fetched", len(montreal))
+    records.extend(montreal)
+
+    alberta = await _fetch_ckan_province(
+        _ALBERTA_CKAN, "affordable housing", "AB", "Edmonton",
+        search_filter=None, max_packages=3,
+    )
+    logger.info("Alberta Open Data: %d records fetched", len(alberta))
+    records.extend(alberta)
 
     # Simple province/city filter
     if province:
@@ -283,6 +319,147 @@ def _normalise_canada(row: dict[str, Any]) -> dict | None:
         "is_accessible": bool(lowered.get("is_accessible") or lowered.get("accessible")),
         "amenities": "",
         "max_income": _safe_float(lowered.get("max_income") or lowered.get("income_limit")),
+        "estimated_wait_days": None,
+        "priority_groups": "",
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Generic provincial CKAN fetcher
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def _fetch_ckan_province(
+    base_url: str,
+    query: str,
+    province: str,
+    default_city: str,
+    *,
+    search_filter: str | None,
+    max_packages: int = 3,
+) -> list[dict]:
+    """Generic CKAN package_search + datastore_search fetcher for any portal."""
+    try:
+        import httpx
+
+        params: dict[str, Any] = {"q": query, "rows": max_packages}
+        if search_filter:
+            params["fq"] = search_filter
+
+        async with httpx.AsyncClient(timeout=20) as client:
+            resp = await client.get(f"{base_url}/package_search", params=params)
+            resp.raise_for_status()
+            packages = resp.json().get("result", {}).get("results", [])
+
+            all_records: list[dict] = []
+            for pkg in packages:
+                for resource in pkg.get("resources", [])[:2]:
+                    fmt = resource.get("format", "").upper()
+                    if fmt not in ("CSV", "JSON", ""):
+                        continue
+                    try:
+                        data_resp = await client.get(
+                            f"{base_url}/datastore_search",
+                            params={"resource_id": resource["id"], "limit": 300},
+                        )
+                        if data_resp.is_success:
+                            rows = data_resp.json().get("result", {}).get("records", [])
+                            normalised = [
+                                n for n in (
+                                    _normalise_generic(r, province, default_city)
+                                    for r in rows
+                                ) if n
+                            ]
+                            all_records.extend(normalised)
+                    except Exception:
+                        continue
+
+            return all_records
+
+    except Exception as exc:
+        logger.warning("CKAN fetch failed (%s): %s", base_url, exc)
+        return []
+
+
+def _normalise_generic(row: dict[str, Any], province: str, default_city: str) -> dict | None:
+    """Normalise any CKAN row to Listing schema using common field name patterns."""
+    lowered = {k.lower(): v for k, v in row.items()}
+
+    city = str(
+        lowered.get("city") or lowered.get("municipality") or
+        lowered.get("ville") or lowered.get("municipalite") or
+        default_city
+    ).strip()
+
+    prov = str(
+        lowered.get("province") or lowered.get("prov") or
+        lowered.get("province_code") or province
+    ).strip().upper()
+    if len(prov) > 2:
+        prov = province  # fall back to known province
+
+    address = str(
+        lowered.get("address") or lowered.get("adresse") or
+        lowered.get("civic_address") or lowered.get("site_address") or
+        lowered.get("street_address") or ""
+    ).strip()
+
+    title = str(
+        lowered.get("project_name") or lowered.get("nom_projet") or
+        lowered.get("development_name") or lowered.get("name") or
+        lowered.get("nom") or lowered.get("organization") or
+        lowered.get("proponent_name") or ""
+    ).strip()
+    if not title and address:
+        title = f"{prov} Affordable Housing – {address[:60]}"
+    if not title:
+        title = f"{prov} Affordable Housing – {city}"
+
+    program_type = str(
+        lowered.get("program_type") or lowered.get("type_programme") or
+        lowered.get("tenure_type") or lowered.get("housing_type") or ""
+    ).lower()
+    is_rgi = any(kw in program_type for kw in ("rgi", "rent-geared", "subsidized", "subventionne"))
+
+    rent = _safe_float(
+        lowered.get("monthly_rent") or lowered.get("loyer") or
+        lowered.get("average_rent") or lowered.get("rent_amount") or
+        lowered.get("rent")
+    )
+    if not rent or rent < 50:
+        rent = 950.0 if is_rgi else 1350.0
+
+    bedrooms = _parse_bedrooms(str(
+        lowered.get("bedroom_type") or lowered.get("bedrooms") or
+        lowered.get("chambres") or lowered.get("unit_type") or "1"
+    ))
+
+    description = (
+        lowered.get("description") or lowered.get("description_en") or
+        f"Affordable housing in {city}, {prov}."
+    )
+
+    return {
+        "title": title[:200],
+        "description": str(description)[:1000],
+        "address": address,
+        "city": city,
+        "province": prov[:2],
+        "postal_code": str(lowered.get("postal_code") or lowered.get("code_postal") or ""),
+        "latitude": _safe_float(lowered.get("latitude") or lowered.get("lat")),
+        "longitude": _safe_float(lowered.get("longitude") or lowered.get("long") or lowered.get("lon")),
+        "rent_amount": rent,
+        "is_rgi": is_rgi,
+        "bedrooms": bedrooms,
+        "bathrooms": 1,
+        "is_accessible": bool(
+            lowered.get("is_accessible") or lowered.get("accessible") or
+            lowered.get("accessibilite")
+        ),
+        "amenities": "",
+        "max_income": _safe_float(
+            lowered.get("max_income") or lowered.get("income_limit") or
+            lowered.get("revenu_max")
+        ),
         "estimated_wait_days": None,
         "priority_groups": "",
     }
