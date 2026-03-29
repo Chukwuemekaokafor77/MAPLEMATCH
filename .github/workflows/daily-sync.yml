@@ -1,0 +1,23 @@
+name: Daily Housing Data Sync
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC = 02:00 ET every day
+  workflow_dispatch:        # allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up Render service
+        run: |
+          curl -sf https://maplematch-api.onrender.com/health || true
+          sleep 30
+
+      - name: Trigger housing data sync
+        run: |
+          curl -sf -X POST https://maplematch-api.onrender.com/cmhc/sync/scheduled \
+            -H "X-Sync-Secret: ${{ secrets.SYNC_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 120 \
+            -w "\nHTTP %{http_code}\n"

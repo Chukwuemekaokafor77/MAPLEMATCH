@@ -1,9 +1,12 @@
 """CMHC sync endpoints — trigger sync and view logs (admin only)."""
 
-from fastapi import APIRouter, Depends, Query, status
+import secrets
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import require_role
+from app.config import settings
 from app.db import get_session
 from app.models import User, UserRole
 from app.schemas import CmhcSyncLogRead, CmhcSyncTrigger
@@ -52,3 +55,14 @@ async def seed_listings(
     province = body.province if body else None
     city = body.city if body else None
     return await cmhc_sync.run_sync(session, province=province, city=city)
+
+
+@router.post("/sync/scheduled", response_model=CmhcSyncLogRead, status_code=status.HTTP_201_CREATED)
+async def scheduled_sync(
+    x_sync_secret: str = Header(..., alias="X-Sync-Secret"),
+    session: AsyncSession = Depends(get_session),
+) -> object:
+    """Trigger sync via shared secret — for automated scheduled jobs (GitHub Actions, cron)."""
+    if not settings.sync_secret or not secrets.compare_digest(x_sync_secret, settings.sync_secret):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid sync secret")
+    return await cmhc_sync.run_sync(session)
